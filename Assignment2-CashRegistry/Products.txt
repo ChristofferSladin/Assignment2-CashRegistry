@@ -1,0 +1,4 @@
+﻿111;Burk Läsk;St Pris;10;
+211;Kanel Bulle;St Pris;5;
+311;Banan;Kg Pris;12,50
+411;Potatis;Kg Pris;8,5;
