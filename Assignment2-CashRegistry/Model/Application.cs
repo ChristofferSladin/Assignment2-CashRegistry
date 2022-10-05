@@ -9,12 +9,8 @@ namespace Assignment2_CashRegistry
 {
     public class Application
     {
-
-
         public void Run()
         {
-            //string path = "C:\\Users\\chris\\source\\repos\\Assignment2-CashRegistry\\Assignment2-CashRegistry\\Products.txt";
-
             var allProducts = new List<Product>();
             allProducts = ReadProductsFromFile();
 
@@ -26,6 +22,8 @@ namespace Assignment2_CashRegistry
                     break;
                 if (sel == 1)
                     RegisterProducts(allProducts);
+                if (sel == 2)
+                    menu.ShowAdminMenu();
             }
         }
         private Product FindProductFromProductId(List<Product> allProducts, string productId)
@@ -40,8 +38,8 @@ namespace Assignment2_CashRegistry
         {
             Product product;
             while (true)
-            { 
-                Console.WriteLine("Ange produktID");
+            {
+                Console.WriteLine("Ange produkt ID");
                 var productId = Console.ReadLine();
 
                 product = FindProductFromProductId(allProducts, productId);
@@ -55,13 +53,16 @@ namespace Assignment2_CashRegistry
             }
             Console.Write($"Ange hur mycket av {product.ProductName} du har köpt: ");
             var countOfSpecificProduct = int.Parse(Console.ReadLine());
+            var sumOfSpecificProduct = countOfSpecificProduct * product.Price;
+            
+            //////// SAVE TO RECIPT
+            ///
 
-            var summa = countOfSpecificProduct * product.Price;
-
-            Console.WriteLine($"Product: {product.ProductName} {product.PriceType} {product.Price} * {countOfSpecificProduct} = {summa}kr");
+            Console.WriteLine($"Product: {product.ProductName} {product.PriceType} {product.Price} * {countOfSpecificProduct} = {sumOfSpecificProduct}kr");
 
             var fileName = DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-            var line = $"{product.ProductName} {countOfSpecificProduct} * {product.Price} = {summa}kr";
+            var line = $"{product.ProductName} {countOfSpecificProduct} * {product.Price} = {sumOfSpecificProduct}kr";
+
             File.AppendAllText(fileName, line + Environment.NewLine);
         }
         private List<Product> ReadProductsFromFile()
