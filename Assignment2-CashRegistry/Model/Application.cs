@@ -49,21 +49,42 @@ namespace Assignment2_CashRegistry
                     Console.WriteLine("Invalid Product ID");
                 }
                 else
-                    break;
+                {
+                    Console.Write($"{product.ProductName} <ANTAL>");      /////// MÅSTE VARA KOMMANDO OCH ANTAL PÅ SAMMA RAD (ANVÄND SPLIT)
+                    var countOfSpecificProduct = int.Parse(Console.ReadLine());
+                    var sumOfSpecificProduct = countOfSpecificProduct * product.Price;
+
+                    Console.WriteLine($"Product: {product.ProductName} {product.PriceType} {product.Price} * {countOfSpecificProduct} = {sumOfSpecificProduct}kr");
+
+                    var fileName = DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+                    var line = $"{product.ProductName} {countOfSpecificProduct} * {product.Price} = {sumOfSpecificProduct}kr";
+
+                    File.AppendAllText(fileName, line + Environment.NewLine);
+
+                    Console.Clear();
+
+                    Console.WriteLine("\nFör att fortsätta lägga till varor klicka valfri tangent");
+                    Console.WriteLine("För att avsluta (N) = AVSLUTA");
+                    var sel = Console.ReadLine();
+
+                    var reciptDate = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+
+                    if (sel == null)
+                    {
+                        continue;
+                    }
+                    if (sel == "N")
+                    {
+                        Console.Clear();
+                        Console.WriteLine("PAY");
+                        File.AppendAllText(fileName, $"-----------{reciptDate}-----------" + Environment.NewLine);
+                        break;
+                    }
+                }
+
             }
-            Console.Write($"Ange hur mycket av {product.ProductName} du har köpt: ");
-            var countOfSpecificProduct = int.Parse(Console.ReadLine());
-            var sumOfSpecificProduct = countOfSpecificProduct * product.Price;
-            
-            //////// SAVE TO RECIPT
-            ///
+            // SAVE TO RECIPT
 
-            Console.WriteLine($"Product: {product.ProductName} {product.PriceType} {product.Price} * {countOfSpecificProduct} = {sumOfSpecificProduct}kr");
-
-            var fileName = DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-            var line = $"{product.ProductName} {countOfSpecificProduct} * {product.Price} = {sumOfSpecificProduct}kr";
-
-            File.AppendAllText(fileName, line + Environment.NewLine);
         }
         private List<Product> ReadProductsFromFile()
         {
