@@ -26,7 +26,7 @@ namespace Assignment2_CashRegistry
                     menu.ShowAdminMenu();
             }
         }
-        private Product FindProductFromProductId(List<Product> allProducts, string productId)
+        public Product FindProductFromProductId(List<Product> allProducts, string productId)
         {
             foreach (var product in allProducts)
             {
@@ -34,15 +34,26 @@ namespace Assignment2_CashRegistry
             }
             return null;
         }
-        private void RegisterProducts(List<Product> allProducts)
+
+        public void RegisterProducts(List<Product> allProducts)
         {
             Product product;
             while (true)
             {
-                Console.WriteLine("Ange produkt ID");
-                var productId = Console.ReadLine();
+                Console.WriteLine($"<Produkt ID> <ANTAL>");
 
-                product = FindProductFromProductId(allProducts, productId);
+                var selectionOfprod = Console.ReadLine();
+
+                if (selectionOfprod == null)
+                {
+                    Console.WriteLine("Felaktigt Produkt ID eller Antal");
+                }
+                var reslut = selectionOfprod.Split(' ');
+
+                reslut[0] = selectionOfprod.Substring(0, 3);
+                reslut[1] = selectionOfprod.Substring(4);
+
+                product = FindProductFromProductId(allProducts, reslut[0]);
 
                 if (product == null)
                 {
@@ -50,25 +61,26 @@ namespace Assignment2_CashRegistry
                 }
                 else
                 {
-                    Console.Write($"{product.ProductName} <ANTAL>");      /////// MÅSTE VARA KOMMANDO OCH ANTAL PÅ SAMMA RAD (ANVÄND SPLIT)
-                    var countOfSpecificProduct = int.Parse(Console.ReadLine());
-                    var sumOfSpecificProduct = countOfSpecificProduct * product.Price;
-
-                    Console.WriteLine($"Product: {product.ProductName} {product.PriceType} {product.Price} * {countOfSpecificProduct} = {sumOfSpecificProduct}kr");
-
+                    // HÄR ÄR VI!!!!!
+                    var reciptDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                     var fileName = DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-                    var line = $"{product.ProductName} {countOfSpecificProduct} * {product.Price} = {sumOfSpecificProduct}kr";
 
+                    var sumToti = 0m;
+                    var prodSum = product.Price* Convert.ToDecimal(reslut[1]);
+
+                    foreach (var row in File.ReadLines(fileName))
+                    {
+                        sumToti += prodSum;
+                    }
+
+                    var line = $"{product.ProductName}: {Convert.ToInt32(reslut[1])} * {product.Price} = {prodSum}";
                     File.AppendAllText(fileName, line + Environment.NewLine);
-
                     Console.Clear();
 
                     Console.WriteLine("\nFör att fortsätta lägga till varor klicka valfri tangent");
                     Console.WriteLine("För att avsluta (N) = AVSLUTA");
+
                     var sel = Console.ReadLine();
-
-                    var reciptDate = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
-
                     if (sel == null)
                     {
                         continue;
@@ -77,16 +89,16 @@ namespace Assignment2_CashRegistry
                     {
                         Console.Clear();
                         Console.WriteLine("PAY");
+                        
+                        File.AppendAllText(fileName, $"  Total: {sumToti} " + Environment.NewLine);
                         File.AppendAllText(fileName, $"-----------{reciptDate}-----------" + Environment.NewLine);
+
                         break;
                     }
                 }
-
             }
-            // SAVE TO RECIPT
-
         }
-        private List<Product> ReadProductsFromFile()
+        public List<Product> ReadProductsFromFile()
         {
             var result = new List<Product>();
 
@@ -102,11 +114,6 @@ namespace Assignment2_CashRegistry
                     Price = Convert.ToDecimal(parts[3])
                 };
                 result.Add(product);
-
-                //var product = new Product();
-                //var name = parts[0];
-                //var priceType = parts[1];
-                //var price = decimal.Parse(parts[2]);
             }
             return result;
         }

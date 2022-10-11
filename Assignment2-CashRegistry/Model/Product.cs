@@ -12,6 +12,14 @@ namespace Assignment2_CashRegistry
         public string ProductName { get; set; }
         public decimal Price { get; set; }
         public string PriceType { get; set; }
+        public decimal TotalenKvitto { get; set; }
+
+        
+
+
+
+
+        
 
     }
 }
