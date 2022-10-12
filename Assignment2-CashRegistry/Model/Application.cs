@@ -9,6 +9,7 @@ namespace Assignment2_CashRegistry
 {
     public class Application
     {
+        
         public void Run()
         {
             var allProducts = new List<Product>();
@@ -38,17 +39,36 @@ namespace Assignment2_CashRegistry
         public void RegisterProducts(List<Product> allProducts)
         {
             Product product;
+            var sumToti = 0m;
             while (true)
             {
                 Console.WriteLine($"<Produkt ID> <ANTAL>");
-
                 var selectionOfprod = Console.ReadLine();
 
-                if (selectionOfprod == null)
+                if (selectionOfprod.Length == 0)
                 {
                     Console.WriteLine("Felaktigt Produkt ID eller Antal");
+                    continue;
                 }
+
                 var reslut = selectionOfprod.Split(' ');
+
+                if (reslut.Length != 2) 
+                {
+                    Console.WriteLine("Ange 2 inputs");
+                    continue;
+                }
+
+                if (reslut[0].Length != 3)
+                {
+                    Console.WriteLine("Produkt ID måste inehålla 3 tecken");
+                    continue;
+                }
+                if (reslut[1].Length == 0 || reslut[1] == "0")
+                {
+                    Console.WriteLine("Antal måste vara minst 1");
+                    continue;
+                }
 
                 reslut[0] = selectionOfprod.Substring(0, 3);
                 reslut[1] = selectionOfprod.Substring(4);
@@ -58,38 +78,28 @@ namespace Assignment2_CashRegistry
                 if (product == null)
                 {
                     Console.WriteLine("Invalid Product ID");
+                    continue;
                 }
                 else
                 {
-                    // HÄR ÄR VI!!!!!
                     var reciptDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                     var fileName = DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
 
-                    var sumToti = 0m;
-                    var prodSum = product.Price* Convert.ToDecimal(reslut[1]);
-
-                    foreach (var row in File.ReadLines(fileName))
-                    {
-                        sumToti += prodSum;
-                    }
+                    var prodSum = product.Price * Convert.ToDecimal(reslut[1]);
+                    sumToti += product.Price * Convert.ToDecimal(reslut[1]);
 
                     var line = $"{product.ProductName}: {Convert.ToInt32(reslut[1])} * {product.Price} = {prodSum}";
                     File.AppendAllText(fileName, line + Environment.NewLine);
                     Console.Clear();
 
-                    Console.WriteLine("\nFör att fortsätta lägga till varor klicka valfri tangent");
-                    Console.WriteLine("För att avsluta (N) = AVSLUTA");
-
                     var sel = Console.ReadLine();
-                    if (sel == null)
-                    {
-                        continue;
-                    }
-                    if (sel == "N")
+                    var pay = sel.ToLower().Trim();
+
+                    if (pay == "pay")
                     {
                         Console.Clear();
-                        Console.WriteLine("PAY");
-                        
+                        Console.WriteLine("PAY\n\n");
+
                         File.AppendAllText(fileName, $"  Total: {sumToti} " + Environment.NewLine);
                         File.AppendAllText(fileName, $"-----------{reciptDate}-----------" + Environment.NewLine);
 
@@ -114,6 +124,7 @@ namespace Assignment2_CashRegistry
                     Price = Convert.ToDecimal(parts[3])
                 };
                 result.Add(product);
+
             }
             return result;
         }
